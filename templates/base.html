@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>{% block head_title %}{% endblock %}</title>
+  {% block extra_head %}
+  {% endblock %}
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+  <!-- Bootstrap core CSS -->
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <!-- Material Design Bootstrap -->
+  <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
+  <!-- Your custom styles (optional) -->
+  <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+  <style type="text/css">
+    html,
+    body,
+    header,
+    .carousel {
+      height: 60vh;
+    }
+
+    @media (max-width: 740px) {
+
+      html,
+      body,
+      header,
+      .carousel {
+        height: 100vh;
+      }
+    }
+
+    @media (min-width: 800px) and (max-width: 850px) {
+
+      html,
+      body,
+      header,
+      .carousel {
+        height: 100vh;
+      }
+    }
+
+    /* Pagination CSS */
+    .pagination,
+    .pagination-footer {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .pagination-footer button {
+      padding: 5px 10px;
+      margin: 0 3px;
+      background-color: #eee;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    .pagination-footer button:hover {
+      background-color: #ddd;
+    }
+
+    /* Additional styling as needed */
+  </style>
+</head>
+
+<!-- Navbar -->
+{% include 'navbar.html' %}
+<!-- Navbar -->
+
+
+
+<body>
+  <div class="mt-5 pt-4">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+  </div>
+
+  <!--Main layout-->
+  <main>
+
+    <div class="container">
+
+      {% block content %}
+
+      {% endblock content %}
+
+    </div>
+  </main>
+  <!--Main layout-->
+  <div class="pagination"></div>
+
+  <!--Footer-->
+  {% include 'footer.html' %}
+  <!--/.Footer-->
+
+  <!-- SCRIPTS -->
+  <!-- JQuery -->
+  <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+  <!-- Bootstrap tooltips -->
+  <script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
+  <!-- Bootstrap core JavaScript -->
+  <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+  <!-- MDB core JavaScript -->
+  <script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
+  <!-- Initializations -->
+  <script type="text/javascript">
+    // Animations initialization
+    new WOW().init();
+
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#searchInput').on('input', function () {
+        var searchText = $(this).val().toLowerCase();
+
+        // Hide all items initially
+        $('.col-lg-3').hide();
+
+        // Loop through each item to check for search text in title, category, and nav-item
+        $('.col-lg-3').each(function () {
+          var title = $(this).find('h5 a').text().toLowerCase();
+          var category = $(this).find('h5.categ').text().toLowerCase();
+          var navItem = $(this).find('a.nav-link').text().toLowerCase();
+
+          if (title.includes(searchText) || category.includes(searchText) || navItem.includes(searchText)) {
+            $(this).show(); // Show the item if matches the search text
+          }
+        });
+      });
+    });
+  </script>
+  <!-- Add this script at the bottom of your HTML file, or in a separate JS file -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#searchInput').on('input', function () {
+        var searchText = $(this).val().toLowerCase();
+        filterItems(searchText);
+      });
+
+      // Function to filter items by category
+      $('.filter-category').on('click', function (e) {
+        e.preventDefault();
+
+        var categoryText = $(this).data('category');
+        filterItems(categoryText);
+      });
+
+      function filterItems(filterText) {
+        $('.col-lg-3').hide();
+
+        $('.col-lg-3').each(function () {
+          var title = $(this).find('h5 a').text().toLowerCase();
+          var category = $(this).find('.categ').text().toLowerCase();
+          var navItem = $(this).find('a.nav-link').text().toLowerCase();
+
+          if (filterText === 'all') {
+            $(this).show(); // Show all items when 'All' is clicked
+          } else if (filterText === 'sport wears') {
+            if (category.includes('sport wears')) {
+              $(this).show(); // Show items with 'Sport wears' category
+            }
+          } else if (
+            title.includes(filterText) ||
+            category.includes(filterText) ||
+            navItem.includes(filterText)
+          ) {
+            $(this).show(); // Show items matching the filterText
+          }
+        });
+      }
+    });
+  </script>
+
+
+  <!-- Script for Pagination -->
+  <script>
+    // Number of items per page
+    const itemsPerPage = 8;
+
+    // Function to display the items for a specific page
+    function displayItems(pageNumber) {
+      const items = document.querySelectorAll('.col-lg-3');
+      const startIndex = (pageNumber - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+
+      items.forEach((item, index) => {
+        if (index >= startIndex && index < endIndex) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    // Function to create pagination buttons
+    function setupPagination() {
+      const items = document.querySelectorAll('.col-lg-3');
+      const totalPages = Math.ceil(items.length / itemsPerPage);
+      const paginationContainer = document.querySelector('.pagination');
+
+      for (let i = 1; i <= totalPages; i++) {
+        const pageButton = document.createElement('button');
+        pageButton.innerText = i;
+        pageButton.addEventListener('click', () => displayItems(i));
+        paginationContainer.appendChild(pageButton);
+      }
+    }
+
+    // Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      displayItems(1); // Display first page by default
+      setupPagination();
+    });
+  </script>
+
+  {% block extra_scripts %}
+
+  {% endblock extra_scripts %}
+</body>
+
+</html>
